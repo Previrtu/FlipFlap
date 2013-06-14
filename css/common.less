@@ -1,0 +1,288 @@
+@charset "utf-8";
+@width: 840px;
+@game_width: 390px;
+@panel_width: @width - @game_width;
+@height: 450px;
+@info_height: 100px;
+@musicbar_height: 70px;
+
+@total_height: @height + @info_height + @musicbar_height;
+
+/* global */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button { margin: 0; padding: 0 }
+fieldset,img { border:0 none }
+dl,ul,ol,menu,li { list-style: none }
+blockquote, q { quotes: none }
+blockquote:before, blockquote:after,q:before, q:after { content: ''; content: none }
+input,select,textarea,button { vertical-align: middle }
+button { border: 0 none; background-color: transparent; cursor: pointer }
+body,th,td,input,select,textarea,button { font-size: 12px; line-height: 1.5; font-family: 나눔고딕, NanumGothic; color: #333 }
+a { color: #333; text-decoration: none }
+a:active, a:hover { text-decoration: underline }
+address,caption,cite,code,dfn,em,var { font-style: normal; font-weight: normal }
+table { table-layout: fixed }
+em { font-style: normal; font-weight: bold; }
+
+::selection {
+	background-color: rgba(0, 0, 0, 0);
+}
+::-webkit-selection {
+	background-color: rgba(0, 0, 0, 0);
+}
+
+@font-face {
+    font-family: 'digit';
+    src: url(../font/digit.ttf);
+}
+
+@-webkit-keyframes note {
+	0% { top: -10px; }
+	100% { top: @total_height; }
+}
+
+@-webkit-keyframes hide {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+@-webkit-keyframes effect_perfect {
+	0% { color: red; }
+	35% { color: yellow; }
+	65% { color: green; }
+	100% { color: skyblue; }
+}
+
+@-webkit-keyframes effect_great {
+	0% { color: red; }
+	50% { color: green; }
+	100% { color: skyblue; }
+}
+
+@-webkit-keyframes effect_good {
+	0% { color: green; }
+	100% { color: skyblue; }
+}
+
+@-webkit-keyframes effect_miss {
+	0% { color: #FFF; }
+	100% { color: #CCC; }
+}
+
+.clearfix {
+	*zoom: 1;
+
+	&:before, &:after {
+		display: table;
+		line-height: 0;
+		content: '';
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+.hide-text {
+	font: 0/0 a;
+	color: transparent;
+	text-shadow: none;
+	background-color: transparent;
+	border: 0;
+}
+.select-element { -webkit-user-drag: element;-webkit-user-select: none }
+
+body {
+	background: #161616 url(../images/background.jpg) 50% 50% no-repeat fixed;
+}
+
+#wrap {
+	position: fixed;
+	top: 50%; left: 50%;
+	width: @width; height: @total_height;
+	margin: -(@total_height / 2) 0 0 -(@width / 2);
+	border: 1px solid #EC008C;
+	box-shadow: 0 0 60px rgba(236,0,140,.8);
+	box-sizing: content-box;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	#game {
+		width: @game_width; height: 100%;
+		float: left;
+	}
+
+	#panel {
+		width: @panel_width; height: 100%;
+		float: right;
+		background: transparent url(../images/logo.png) 100% 100% no-repeat;
+	}
+
+	#game > ul {
+		width: 390px; height: 100%;
+		
+		li {
+			display: inline-block;
+			width: 40px; height: 100%;
+			border-right: 1px solid rgba(255,255,255,0.4);
+
+			&:nth-child(even) {
+				div.line div.column { height: 45px; }
+			}
+
+			div.line {
+				position: relative;
+				width: 100%; height: 100%;
+				overflow: hidden;
+				// -webkit-transition: box-shadow 0.1s ease-out;
+
+				div.animate {
+					position: absolute;
+					top: 0; left: 0;
+					width: 100%;
+					z-index: 10;
+					display: block;
+					font-size: 16px;
+					font-family: digit;
+					text-shadow: 1px 2px 5px;
+					text-align: center;
+
+					&.perfect { -webkit-animation: effect_perfect 0.2s ease-in-out 4; }
+					&.great { -webkit-animation: effect_great 0.2s ease-in-out 4; }
+					&.good { -webkit-animation: effect_good 0.2s ease-in-out 4; }
+					&.miss { -webkit-animation: effect_miss 0.2s ease-in-out 4; }
+				}
+
+				&.press {
+					// box-shadow: inset 0 -50px 40px 2px rgba(236,0,140,0.95);
+					box-shadow: inset 0 -80px 30px -10px rgb(236,0,140);
+				}
+
+				div.note {
+					position: absolute;
+					top: -10px; left: 0;
+					z-index: 1;
+					display: block;
+					width: 100%; height: 10px;
+					background-color: #ff64c0;
+					border-radius: 8px;
+					box-shadow: 0 0 5px rgba(236,0,140,0.8);
+					opacity: 1;
+
+					&.action {
+						-webkit-animation: note 1s linear;
+					}
+				}
+
+				div.column {
+					position: absolute;
+					bottom: 0; left: 0;
+					z-index: 3;
+					width: 100%; height: 30px;
+					background-color: rgba(255,255,255,.8);
+					border-radius: 8px 8px 0 0;
+					box-shadow: -1px 0 10px #EC00BC;
+					font-size: 24px;
+					font-family: Digit;
+					text-align: center;
+				}
+			}
+		}
+	}
+
+	// TAG: div;
+	#musicbar {
+		width: 100%; height: @musicbar_height;
+
+		ul {
+			width: 100%; height: @musicbar_height;
+			font-size: 1px;
+
+			li {
+				position: relative;
+				display: block;
+				width: @panel_width / 120; height: 100%;
+				font-size: 0.1px;
+				overflow: hidden;
+				float: left;
+				border-right: 1px solid rgba(255,255,255,.1);
+
+				&:first-child { border-left: 1px solid rgba(255,255,255,.1); }
+
+				div {
+					position: relative;
+					display: block;
+					width: @panel_width / 120; height: @musicbar_height / 16;
+					border-bottom: 1px solid rgba(255,255,255,.1);
+
+					&.fill {
+						&.gray { background-color: #a4a4a4; i { background-color: #707070; } }
+						&.black { background-color: #848383; i { background-color: #bdbbb9; } }
+						&.yellow { background-color: #ffe71e; i { background-color: #ffcc00; } }
+						&.blue { background-color: #48aec8; i { background-color: #84cbe2; } } 
+					}
+				}
+			}
+		}
+	}
+
+	// TAG: div;
+	#information {
+		position: relative;
+		width: 100%; height: @info_height;
+		background-color: rgba(236,0,140,0.5);
+		margin: 0; padding: 10px;
+		color: #FAFAFA;
+
+		div.albumart {
+			width: 80px; height: 80px;
+			float: left;
+			border: 1px solid rgba(255,255,255,0.5);
+			box-shadow: 3px 4px 2px rgba(255,255,255,0.255);
+			margin: 0 11px 0 0;
+			overflow: hidden;
+
+			img {
+				width: 80px; height: 80px;
+			}
+		} 
+
+		div.info {
+			float: left;
+
+			h2, h3, h4 { width: 160px }
+			h3.artist, h4.time { font-weight: normal; }
+			h2.name, h3.artist { width: 160px; text-overflow: ellipsis; word-spacing: nowrap; overflow: hidden; }
+		}
+
+		div.scoreinfo {
+			position: relative;
+			height: 100%;
+			float: right;
+			text-align: right;
+
+			// TAG: div;
+			#ar {
+				position: absolute;
+				top: -11px;
+				text-align: right;
+				width: 100%;
+				font-size: 12px;
+				font-family: digit;
+				opacity: .7;
+			}
+
+			// TAG: div;
+			#totalscore {
+				font-family: digit;
+				font-size: 36px;
+				line-height: 36px;
+				text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+			}
+
+			div.sub {
+				line-height: 11.5px;
+			}
+		}
+	}
+}
