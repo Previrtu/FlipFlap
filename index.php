@@ -24,6 +24,9 @@
 	<div id="time">0</div>
 	<div id="wrap">
 		<div id="game">
+			<div id="combo">
+				<span></span>
+			</div>
 			<ul>
 				<li>
 					<div class="line line_01">

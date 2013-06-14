@@ -124,6 +124,7 @@
 
 		Objects: {
 			Root: null,
+			Combo: null,
 			DebugLine: null,
 			Line: {},
 			LineDiv: {},
@@ -150,6 +151,7 @@
 
 		_GameObject: {
 			last: -1,
+			combo: 0,
 
 			judge: {
 				SIZE: 45,
@@ -183,6 +185,24 @@
 				FlipFlap.Objects.Score.GREAT.innerText = FlipFlap.Result.GREAT;
 				FlipFlap.Objects.Score.GOOD.innerText = FlipFlap.Result.GOOD;
 				FlipFlap.Objects.Score.MISS.innerText = FlipFlap.Result.MISS;
+			},
+
+			setCombo: function(combo) {
+				if(FlipFlap.Objects.Combo == null) return;
+				if(combo == '+1') combo = this.combo + 1
+				if(combo == 0) FlipFlap.Objects.Combo.style.display = 'none';
+				else if(combo > 6) {
+					FlipFlap.Objects.Combo.style.display = 'block';
+					FlipFlap.Objects.Combo.innerText = combo;
+				}
+				this.combo = combo;
+
+				// if(combo > 0) {
+				// 	if(FlipFlap.Objects.Combo.classList.contains('bounce'))
+				// 		FlipFlap.Objects.Combo.classList.remove('bounce');
+
+				// 	FlipFlap.Objects.Combo.classList.add('bounce');
+				// }
 			},
 
 			calcJudgeSize: function() {
@@ -237,23 +257,27 @@
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].classList.add('perfect');
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].innerText = '100%';
 						FlipFlap.pressBar[mTime] += 3;
+						FlipFlap.Instance.setCombo('+1');
 					} else if(top > FlipFlap.Instance.height - FlipFlap.Instance.judge.GREAT - FlipFlap.Instance.judge.SIZE) {
 						FlipFlap.Result.GREAT++;
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].className = 'animate';
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].classList.add('great');
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].innerText = 'GREAT';
 						FlipFlap.pressBar[mTime] += 1;
+						FlipFlap.Instance.setCombo('+1');
 					} else if(top > FlipFlap.Instance.height - FlipFlap.Instance.judge.GOOD - FlipFlap.Instance.judge.SIZE){
 						FlipFlap.Result.GOOD++;
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].className = 'animate';
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].classList.add('good');
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].innerText = 'good';
 						FlipFlap.pressBar[mTime] += 1;
+						FlipFlap.Instance.setCombo('+1');
 					} else if(top > 0) {
 						FlipFlap.Result.MISS++;
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].className = 'animate';
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].classList.add('miss');
 						FlipFlap.Objects.Animate[FlipFlap.Keys[key]].innerText = 'miss';
+						FlipFlap.Instance.setCombo(0);
 					}
 
 					last.classList.remove('action');
@@ -505,6 +529,7 @@
 						FlipFlap.Instance.calcScore();
 
 						this.parentNode.removeChild(this);
+						FlipFlap.Instance.setCombo(0);
 					}, false);
 					FlipFlap.Objects.LineDiv[num[i]].appendChild(note);
 				}
@@ -601,6 +626,11 @@
 					this.innerText = '';
 				}, false);
 			}
+
+			this.Objects.Combo = document.getElementById('combo').getElementsByTagName('span')[0];
+			this.Objects.Combo.addEventListener('webkitAnimationEnd', function() {
+				this.classList.remove('bounce');
+			}, false);
 
 			this.Objects.Score = {
 				TOTAL_SCORE: document.getElementById('totalscore'),
